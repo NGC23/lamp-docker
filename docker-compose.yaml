@@ -1,0 +1,31 @@
+version: "3.7"
+# TODO: Add env. file
+# TODO: change db files to secrets
+services:
+  app-php:
+    build:
+      dockerfile: docker/php/Dockerfile
+      context: .
+    restart: always
+    volumes:
+      - ./src:/var/www/html/ #for your codebase
+      # TODO: I need to figure out the apache configs
+      # - ./docker/config/apache/sites-enabled:/etc/apache2/sites-enabled #for apache config
+      # - ./docker/server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini This is for extra php config
+    ports:
+      - "8101:80"
+  
+  mysql-server:
+    image: mysql:8.0.19
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: my_secret_password
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_user_pass
+    ports:
+      - "6033:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
